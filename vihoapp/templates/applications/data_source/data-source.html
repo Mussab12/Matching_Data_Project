@@ -1,0 +1,99 @@
+{% extends 'base.html' %} {% load static %} {% load sass_tags %} {% block css %}
+
+<!-- Plugins css start-->
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{% sass_src 'assets/css/dropzone.css' %}"
+/>
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{% sass_src 'assets/scss/select2.scss' %}"
+/>
+<!-- Plugins css Ends-->
+
+{% endblock %} {% block content %}
+
+<div class="page-body">
+  {% include "layout/breadcrumb.html" %}
+  <div class="container-fluid">
+    <div class="row">
+      {% comment %}
+      <script src="{% static 'assets/js/editor/ckeditor/adapters/jquery.js'%}"></script>
+      {% endcomment %} 
+      {% include "applications/data_source/components/data-1.html" %} 
+      {% include "applications/data_source/components/data-2.html" %}
+    </div>
+  </div>
+</div>
+
+{% endblock %} {% block scriptcontent %}
+
+<!-- Plugins JS start-->
+{% comment %}
+<script src="{% static 'assets/js/dropzone/dropzone.js'%}"></script>
+{% endcomment %} {% comment %}
+<script src="{% static 'assets/js/dropzone/dropzone-script.js'%}"></script>
+{% endcomment %}
+<script src="{% static 'assets/js/select2/select2.full.min.js'%}"></script>
+<script src="{% static 'assets/js/select2/select2-custom.js'%}"></script>
+<script>
+  $(document).ready(function (e) {
+    console.log("page is ready -------------");
+    $("#file").click(function (e) {
+      e.preventDefault();
+      console.log("file clicked!");
+    });
+    $("#db").click(function (e) {
+      e.preventDefault();
+      console.log("DB clicked!");
+    });
+
+    $("#upload").on("click", function (e) {
+      e.preventDefault();
+      console.log("upload clicked!");
+      var form_data = new FormData();
+      var ins = document.getElementById("up-file").files.length;
+      if (ins == 0) {
+            console.log('file is invalid')
+        $("#msg").html(
+          '<span style="color:red">Select at least one file</span>'
+        );
+        return;
+      }
+      {% comment %} for (var x = 0; x < ins; x++) {
+        form_data.append(
+          "files[]",
+          document.getElementById("up-file").files[x]
+        );
+      } {% endcomment %}
+      {% comment %} var file = $('#up-file').files[0] {% endcomment %}
+      {% comment %} console.log('file: '+file) {% endcomment %}
+      form_data.append('up-file',$('#up-file')[0].files[0])
+      csrf_token = $('input[name="csrfmiddlewaretoken"]').val();
+      form_data.append("csrfmiddlewaretoken", csrf_token);
+      $.ajax({
+        url: "display_table", // point to server-side URL
+        dataType: "text", // what to expect back from server
+        cache: false,
+        contentType: false,
+        processData: false,
+        //data: {'data': form_data, 'csrfmiddlewaretoken': csrf_token},
+        data: form_data,
+        type: "post",
+        success: function (response) {
+          // display success response
+          console.log('response :: '+response)
+          $("#msg").html(response.msg);
+        },
+        error: function (response) {
+            console.log('ERR response :: '+response)
+          $("#msg").html(response.message); // display error response
+        },
+      });
+    });
+  });
+</script>
+<!-- Plugins JS Ends-->
+{% endblock %}

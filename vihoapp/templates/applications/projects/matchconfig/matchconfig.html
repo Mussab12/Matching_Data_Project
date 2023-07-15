@@ -1,0 +1,171 @@
+{% extends 'base.html' %} {% load static %} {% load sass_tags %} {% block css %}
+<!-- Plugins css start-->
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{% sass_src 'assets/scss/animate.scss' %}"
+/>
+<style>
+  .circle-icon {
+    /* position: relative; */
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background-color: darkblue;
+    border-radius: 50%;
+    margin-right: -7px;
+  }
+  .circle-icon.dark {
+    background-color: #1693bcd6;
+  }
+
+  .btn1 {
+    display: flex;
+    align-items: center;
+  }
+  .btn1 .btn-text {
+    margin-left: 23px;
+  }
+  .circle-icon2 {
+    position: relative;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background-color: #363839;
+    border-radius: 50%;
+    margin-right: 5px;
+  }
+  .circle-icon2.lightgrey {
+    background-color: #a6a6a6;
+  }
+  .circle-icon3 {
+    position: relative;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background-color: #363839;
+    border-radius: 50%;
+    margin-right: -7px;
+  }
+  .circle-icon3.lightgrey {
+    background-color: #a6a6a6;
+  }
+  .circle-icon3::before,
+  .circle-icon3::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 10px;
+    height: 20px;
+    background-color: lightblue;
+    border-radius: 50%;
+  }
+  .circle-icon3::before {
+    z-index: -1;
+    clip-path: polygon(0% 0%, 100% 0%, 50% 100%);
+  }
+  .circle-icon3.lightgrey::after {
+    z-index: -1;
+    clip-path: polygon(0% 100%, 100% 0%, 100% 100%);
+  }
+</style>
+<!-- <!  -- Plugins css Ends-->
+<!-- {% endblock %} {% block content %} -->
+
+<div class="page-body">
+  {% include "layout/breadcrumb.html" %}
+  <div class="container-fluid">
+    <div class="row project-cards">
+      <div class="col-md-12 project-list">
+        <div class="container">
+          <h5>Quick Selection</h5>
+          <form id="fileForm">
+            <input type="file" id="xlsxFile" name="xlsxFile" />
+            <input type="submit" value="Upload" />
+          </form>
+          <div class="btn-group">
+            <a class="btn btn-primary btn1 d-flex" href="" id="select-all">
+              <span class="circle-icon"></span>
+              <span class="circle-icon dark"></span>
+              <span class="btn-text">All</span>
+            </a>
+            <a class="btn btn-primary btn1 d-flex" href="" id="select-none">
+              <span class="circle-icon2"></span>
+              <span class="circle-icon2 lightgrey"></span>
+              <span class="btn-text">None</span>
+            </a>
+            <a class="btn btn-primary btn1 d-flex" href="" id="select-between">
+              <span class="circle-icon3"></span>
+              <span class="circle-icon3 lightgrey"></span>
+              <span class="btn-text">Between</span>
+            </a>
+            <a class="btn btn-primary btn1 d-flex" href="" id="select-within">
+              <span class="circle-icon"></span>
+              <span class="circle-icon dark"></span>
+              <span class="btn-text">Within</span>
+            </a>
+          </div>
+          <br /><br />
+          <table class="table table-bordered">
+            <thead></thead>
+            <tbody>
+              <tr>
+                <td></td>
+                <td>
+                  <input
+                    type="checkbox"
+                    name="customer_master"
+                    id="customer_master"
+                  />
+                </td>
+                <td></td>
+                <td>
+                  <input
+                    type="checkbox"
+                    name="group_record"
+                    id="group_record"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td></td>
+                <td>
+                  <input
+                    type="checkbox"
+                    name="customermaster_record"
+                    id="customermaster_record"
+                  />
+                </td>
+                <td>
+                  <input
+                    type="checkbox"
+                    name="newprospect_record"
+                    id="newprospect_record"
+                  />
+                </td>
+                <td>
+                  <input type="checkbox" name="grouprecord" id="grouprecord" />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="col-sm-12"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %} {% block scriptcontent %}
+<!-- Plugins JS start-->
+<script src="{% static 'assets/js/prism/prism.min.js'%}"></script>
+<script src="{% static 'assets/js/clipboard/clipboard.min.js'%}"></script>
+<script src="{% static 'assets/js/custom-card/custom-card.js'%}"></script>
+<script src="{% static 'assets/js/height-equal.js'%}"></script>
+<script src="{% static 'assets/js/projects/data_profile.js'%}"></script>
+<script src="{% static 'assets/js/projects/matchconfig.js'%}"></script>
+
+<!-- Plugins JS Ends-->
+{% endblock %}

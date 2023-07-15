@@ -1,0 +1,64 @@
+{% extends 'base.html' %} {% load static %} {% load sass_tags %} {% block css %}
+{% load common %}
+<!-- Plugins css start-->
+<link rel="stylesheet" type="text/css" href="{% sass_src 'assets/scss/animate.scss' %}" />
+<link rel="stylesheet" type="text/css" href="{% sass_src 'assets/scss/datatables.scss' %}">
+<link rel="stylesheet" type="text/css" href="{% sass_src 'assets/scss/custom.scss' %}" />
+<!-- Plugins css Ends-->
+{% endblock %} {% block content %}
+
+<div class="page-body">
+  {% include "layout/breadcrumb.html" %}
+  <div class="container-fluid">
+
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+              <div class="card-header">
+                <h5>Profile ID : {{ profile_id }}</h5>
+              </div>
+                  <div class="table-responsive">
+                    <table class="table table-bordered" id="profile-history-table">
+                      <thead>
+                        <tr>
+                          <th>User</th>
+                          <th>Time</th>
+                          <th>Created Date</th>
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+
+                        {% for history in data %}
+                            <tr>
+                                <td>{{ history.profile_user.fname }}</td>
+                                <td>{{ history.profile_time }}</td>
+                                <td>{{ history.created_at }}</td>
+                                <td>
+                                    <a type="button" class="btn btn-warning" href="{% url 'data_profile:profile-show' history.id%}">View</a>
+                                </td>
+
+                            </tr>
+                        {% endfor %}
+
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+</div>
+
+  </div>
+</div>
+
+{% endblock %} {% block scriptcontent %}
+<!-- Plugins JS start-->
+<script src="{% static 'assets/js/prism/prism.min.js'%}"></script>
+<script src="{% static 'assets/js/clipboard/clipboard.min.js'%}"></script>
+<script src="{% static 'assets/js/custom-card/custom-card.js'%}"></script>
+<script src="{% static 'assets/js/height-equal.js'%}"></script>
+<script src="{% static 'assets/js/datatable/datatables/jquery.dataTables.min.js'%}"></script>
+<script src="{% static 'assets/js/projects/data_profile_history.js'%}"></script>
+<!-- Plugins JS Ends-->
+{% endblock %}

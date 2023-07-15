@@ -1,0 +1,85 @@
+{% load static %} {% load sass_tags %}
+
+<div class="col-xl-9 col-md-12 box-col-12">
+  <div class="file-content">
+    <div class="card">
+      {% comment %} <div class="card-body file-manager">
+        <h4>Select Data Source Type</h4>
+        <ul class="files data-files">
+          <li class="file-box">
+            <div class="file-top"> <i class="fa fa-file-text-o txt-primary"></i></div>
+            <div class="file-bottom">
+              <h6 class="m-25">Delimited Text File </h6>
+              
+            </div>
+          </li>
+          <li class="file-box">
+            <div class="file-top"> <i class="fa fa-file-excel-o txt-secondary"></i></div>
+            <div class="file-bottom">
+              <h6 class="m-25">Excel (.xlsx) </h6>
+            </div>
+          </li>
+          <li class="file-box">
+            <div class="file-top"> <i class="fa fa-file-excel-o txt-success"></i></div>
+            <div class="file-bottom">
+              <h6 class="m-25">Excel 97-2003(xls)</h6>
+            </div>
+          </li>
+          <li class="file-box">
+            <div class="file-top"> <i class="fa fa-file-text-o txt-info"></i></div>
+            <div class="file-bottom">
+              <h6 class="m-25">Fixed width text file </h6>
+            </div>
+          </li>
+        </ul>
+      </div> {% endcomment %}
+        <div class="card-header">
+            <h5>Upload File</h5>
+	{% if messages %}
+	<ul style="color: red;font-weight: 600;margin-top: 20px;margin-bottom: -32px;">
+	{% for message in messages %}
+		<li>{{ message }}</li>
+	{% endfor %}
+	</ul>
+	{% endif %}
+        </div>
+        <form class="" id="singleFileUpload" method="post" enctype="multipart/form-data">
+          {% csrf_token %}  
+          <div class="card-body dropdown-basic">
+            <div class="dropdown mb-3 row" style="text-align:left;">
+                <label class="col-form-label">Select File Format</label>
+                <select class="js-example-basic-single col-sm-6" id='file-type'>
+                  <optgroup label="File Formats">
+                    {% comment %} <option value=''>Select File Type</option> {% endcomment %}
+                    <option value="csv">Delimited Text File</option>
+                    <option value="xlsx">Excel (.xlsx)</option>
+                    <option value="xls">Excel 97-2003(xls)</option>
+                    <option value="text">Fixed width text file</option>
+                  </optgroup>
+                  {% comment %} <optgroup label="Designer">
+                    <option value="WY">Peter</option>
+                    <option value="WY">Hanry Die</option>
+                    <option value="WY">John Doe</option>
+                  </optgroup> {% endcomment %}
+                </select>
+            </div>
+            {% comment %} <div class="dropzone digits dz-clickable">
+                <div class="dz-message needsclick"><i class="icon-cloud-up"></i>
+                  <h6>Drop files here or click to upload.</h6>        
+                </div>
+            </div> {% endcomment %}
+            <div class="mb-3 row">
+              {% comment %} <label class="col-sm-3 col-form-label">Upload File</label> {% endcomment %}
+              <div class="col-sm-6">
+                <input class="form-control" id='up-file' name='up-file' type="file">
+              </div>
+            </div>
+          </div>
+          <div class="card-footer">
+              <button class="btn btn-primary" id="upload">Submit</button>
+              <button class="btn btn-secondary">Cancel</button>
+          </div>
+        </form>
+    </div>
+  </div>
+</div>

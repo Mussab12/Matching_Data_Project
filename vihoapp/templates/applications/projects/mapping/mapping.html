@@ -1,0 +1,189 @@
+{% extends 'base.html' %} {% load static %} {% load sass_tags %} {% block css %}
+<!-- Plugins css start-->
+<link rel="stylesheet" type="text/css" href="{% sass_src 'assets/scss/animate.scss' %}" />
+<link rel="stylesheet" type="text/css" href="{% sass_src 'assets/scss/datatables.scss' %}" />
+<!-- Plugins css Ends-->
+{% endblock %} {% block content %}
+
+<div class="page-body">
+  {% include "layout/breadcrumb.html" %}
+  <div class="container-fluid">
+    <div class="row project-cards">
+      <div class="col-sm-4">
+        <div class="card">
+          <div class="card-body">
+            <div class="tab-content" id="top-category">
+              <div class="tab-pane fade show active" id="top-home" role="tabpanel" aria-labelledby="top-home-tab">
+                <div class="row">
+                  <div>
+                    <h3>Data Source</h3>
+                  </div>
+                  <div class="p-r-0">
+                    <button id="btn_datasource_add" class="btn btn-primary m-b-10 float-end">Add</button>
+                  </div>
+                  <table id="table_datasource_list" class="table table-hover text-center">
+                    <thead>
+                    <tr>
+                        <th class="col-sm-7">Name</th>
+                        <th class="col-sm-5">Action</th>
+                    </tr>
+                    </thead>
+                    <tfoot>
+                    <tr>
+
+                    </tr>
+                    </tfoot>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-8">
+        <div class="card">
+          <div class="card-body">
+            <div class="tab-content" id="top-mapping">
+              <div class="tab-pane fade show active" id="top-home" role="tabpanel" aria-labelledby="top-home-tab">
+                <div class="row">
+                  <div>
+                    <h3>Mapping</h3>
+                  </div>
+                  <form class="" id="singleFileUpload" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="text-left dropdown mb-3">
+                      <label class="col-form-label">Select File Format</label>
+                      <div class="col-sm-6">
+                        <select class="js-example-basic-single col-sm-6" name="list_datasource" id="list_datasource" required>
+                        </select>
+                      </div>
+                    </div>
+                    {% comment %} 
+                    <div class="dropzone digits dz-clickable">
+                      <div class="dz-message needsclick"><i class="icon-cloud-up"></i>
+                        <h6>Drop files here or click to upload.</h6>        
+                      </div>
+                    </div>
+                    {% endcomment %}
+                    <div class="mb-3 row">
+                      {% comment %} <label class="col-sm-3 col-form-label">Upload File</label> {% endcomment %}
+                      <div class="col-sm-6">
+                        <input class="form-control" name='up-file' type="file">
+                      </div>
+                      <div class="col-sm-6">
+                        <button class="btn btn-primary">Submit</button>
+                        <button class="btn btn-secondary">Cancel</button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+                <div>
+                  <h3>Mapping CRUD</h3>
+                  <table id="table_mapping_crud" class="table table-hover text-center">
+                    <thead>
+                    <tr>
+                        <th class="col-sm-3">Mapping Header Name</th>
+                        <th class="col-sm-4">Original Name</th>
+                        <th class="col-sm-5">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                      {% for x in mapping_list %}
+                        <tr>
+                            <td>{{x.0}}</td>  
+                            <td>{{x.1}}</td>
+                            {% if x.0 == x.1 %}
+                            <td>
+                              <button class="btn btn-warning btn_mapping_edit">Edit</button>
+                            </td>
+                            {% else %}
+                            <td>
+                              <button class="btn btn-warning btn_mapping_edit">Edit</button>
+                              <button class="btn btn-danger btn_mapping_delete">Delete</button>
+                            </td>
+                            {%endif%}
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                    </tr>
+                    </tfoot>
+                  </table>
+                  <div class="text-center">
+                    <button class="btn btn-lg btn-success mb-3">Senzing</button> 
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modal_datasource" role="dialog" aria-hidden="true">
+  <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content" style="padding-top: 0 !important;">
+          <div class="modal-header">
+              <h4 class="modal-title" id="modal_title_datasource"></h4>
+          </div>
+          <div class="modal-body">
+            <div class="form-group m-b-0" id="task_desc">
+                <input type="text" class="form-control" id="datasource_name" name="name" placeholder="Enter the Data Source name" required="true">
+            </div>
+            <p id="datasource_error" style="color: red; font-size: 11px;" class="hide m-b-0"></p>
+            <input id="datasource_id" class="hide" style="display: none"/>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-success btn-block"
+                id="btn_datasource_save"><span class="glyphicon glyphicon-ok"></span>
+                Save
+            </button>
+          </div>
+      </div>
+  </div>
+</div>
+
+<div class="modal" id="modal_mapping" role="dialog" aria-hidden="true">
+  <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content" style="padding-top: 0 !important;">
+          <div class="modal-header">
+              <h4 class="modal-title" id="modal_title_mapping">Mapping Edit</h4>
+          </div>
+          <div class="modal-body">
+            <div class="form-group m-b-0" id="task_desc">
+                <label for="original_name">Original Name</label>
+                <input type="text" class="form-control" id="original_name" name="name" readonly>
+            </div>
+            <!-- <input id="datasource_id" class="hide" style="display: none"/> -->
+            <div class="form-group m-b-0" id="task_desc_1">
+              <label for="mapping_headers_name">Mapping Header Name</label>
+              <input type="text" class="form-control" id="mapping_headers_name" name="name" required="true">
+          </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-success btn-block"
+                id="btn_mapping_headers_save"><span class="glyphicon glyphicon-ok"></span>
+                Save
+            </button>
+          </div>
+      </div>
+  </div>
+</div>
+{% endblock %} {% block scriptcontent %}
+<!-- Plugins JS start-->
+<script src="{% static 'assets/js/prism/prism.min.js'%}"></script>
+<script src="{% static 'assets/js/clipboard/clipboard.min.js'%}"></script>
+<script src="{% static 'assets/js/custom-card/custom-card.js'%}"></script>
+<script src="{% static 'assets/js/dropzone/dropzone.js'%}"></script>
+<script src="{% static 'assets/js/dropzone/dropzone-script.js'%}"></script>
+<script src="{% static 'assets/js/height-equal.js'%}"></script>
+<script src="{% static 'assets/js/datatable/datatables/jquery.dataTables.min.js'%}"></script>
+<script src="{% static 'assets/js/projects/mapping.js'%}"></script>
+<!-- Plugins JS Ends-->
+{% endblock %}

@@ -1,0 +1,378 @@
+{% load static %} {% load sass_tags %}
+{% load common %}
+
+<div class="tab-pane fade show active" id="accuracy" role="tabpanel" aria-labelledby="accuracy">
+  <div class="row">
+    <div class="col-sm-12">
+        <div class="card">
+          <div class="card-header">
+            <h5>Accuracy</h5>
+          </div>
+              <div class="table tableFixHead">
+                <table class="table table-bordered text-end">
+                  <thead class="text-center">
+                    <tr>
+                      <th colspan="2"></th>
+                      <th colspan="3"> Counts </th>
+                      <th colspan="10">Characters</th>
+
+                    </tr>
+                      <tr>
+                          <th>Column Name</th>
+                          <th>Pattern Detection</th>
+                          <th>Max Length</th>
+                          <th>Null</th>
+                          <th>Filled</th>
+                          <th>Numbers</th>
+                          <th>Numbers Only</th>
+                          <th>Letters</th>
+                          <th>Letters Only</th>
+                          <th>Numbers and Letters</th>
+                          <th>Leading Spaces</th>
+                          <th>Trailing Spaces</th>
+                          <th>Non-Printable Characters</th>
+                          <th>Outlier Detection</th>
+                          <th>Punctuation</th>
+                        </tr>
+                  </thead>
+                  <tbody>
+
+                    {% for column in columns %}
+                        <tr>
+                            <td>{{ column }}</td>
+                            <td>
+                                {% with data.pattern_columns|arrayIndex:forloop.counter0|count_of_validPattern as valid %}
+                                    {{ valid }}
+                                    {% if valid > 0 %}
+                                        <a class="txt-primary" onclick="displayPattern('{{ profile_id }}', '{{ forloop.counter0 }}')"><i class="fa fa-search"></i></a>
+                                    {% endif %}
+                                {% endwith %}
+
+                            </td>
+                            <td >
+                                {% with data.maxlen_columns|arrayIndex:forloop.counter0 as maxlen %}
+                                    {% if maxlen > 0 %}
+                                        <a onclick="accuracy_detail({{ profile_id }}, 'maxlen_columns', {{ forloop.counter0 }})" role="button">
+                                            {{ maxlen }}
+                                        </a>
+                                    {% else %}
+                                        {{ maxlen }}
+                                    {% endif %}
+                                {% endwith %}
+                            </td>
+                            <td>
+                                {% with data.field_column|arrayIndex:forloop.counter0|get_item:"null_fields" as null_fields %}
+                                    {% if null_fields > 0 %}
+                                        <a onclick="accuracy_detail({{ profile_id }}, 'null_fields', {{ forloop.counter0 }})" role="button">
+                                            {{ null_fields }}
+                                        </a>
+                                    {% else %}
+                                        {{ null_fields }}
+                                    {% endif %}
+                                {% endwith %}
+
+                                <a class="txt-primary" onclick="displayNullFilled('{{ profile_id }}', '{{ forloop.counter0 }}')" role="button"><i class="fa fa-bar-chart-o"></i></a>
+                            </td>
+                            <td>
+                                {% with data.field_column|arrayIndex:forloop.counter0|get_item:"filled_fields" as filled_fields %}
+                                    {% if filled_fields > 0 %}
+                                        <a onclick="accuracy_detail({{ profile_id }}, 'filled_fields', {{ forloop.counter0 }})" role="button">
+                                            {{ filled_fields }}
+                                        </a>
+                                    {% else %}
+                                        {{ filled_fields }}
+                                    {% endif %}
+                                {% endwith %}
+                            </td>
+                            <td>
+                                {% with data.character_columns|arrayIndex:forloop.counter0|get_item:"contain_numbers" as contain_numbers %}
+                                    {% if contain_numbers > 0 %}
+                                        <a onclick="accuracy_detail({{ profile_id }}, 'contain_numbers', {{ forloop.counter0 }})" role="button">
+                                            {{ contain_numbers }}
+                                        </a>
+                                    {% else %}
+                                        {{ contain_numbers }}
+                                    {% endif %}
+                                {% endwith %}
+                            </td>
+                            <td>
+                                {% with data.character_columns|arrayIndex:forloop.counter0|get_item:"numbers_only" as numbers_only %}
+                                    {% if numbers_only > 0 %}
+                                        <a onclick="accuracy_detail({{ profile_id }}, 'numbers_only', {{ forloop.counter0 }})" role="button">
+                                            {{ numbers_only }}
+                                        </a>
+                                    {% else %}
+                                        {{ numbers_only }}
+                                    {% endif %}
+                                {% endwith %}
+                            </td>
+                            <td>
+                                {% with data.character_columns|arrayIndex:forloop.counter0|get_item:"contain_letters" as contain_letters %}
+                                    {% if contain_letters > 0 %}
+                                        <a onclick="accuracy_detail({{ profile_id }}, 'contain_letters', {{ forloop.counter0 }})" role="button">
+                                            {{ contain_letters }}
+                                        </a>
+                                    {% else %}
+                                        {{ contain_letters }}
+                                    {% endif %}
+                                {% endwith %}
+                            </td>
+                            <td>
+                                {% with data.character_columns|arrayIndex:forloop.counter0|get_item:"letters_only" as letters_only %}
+                                    {% if letters_only > 0 %}
+                                        <a onclick="accuracy_detail({{ profile_id }}, 'letters_only', {{ forloop.counter0 }})" role="button">
+                                            {{ letters_only }}
+                                        </a>
+                                    {% else %}
+                                        {{ letters_only }}
+                                    {% endif %}
+                                {% endwith %}
+                            </td>
+                            <td>
+                                {% with data.character_columns|arrayIndex:forloop.counter0|get_item:"contain_letters_numbers" as contain_letters_numbers %}
+                                    {% if contain_letters_numbers > 0 %}
+                                        <a onclick="accuracy_detail({{ profile_id }}, 'contain_letters_numbers', {{ forloop.counter0 }})" role="button">
+                                            {{ contain_letters_numbers }}
+                                        </a>
+                                    {% else %}
+                                        {{ contain_letters_numbers }}
+                                    {% endif %}
+                                {% endwith %}
+                            </td>
+                            <td>
+                                {% with data.character_columns|arrayIndex:forloop.counter0|get_item:"leading_space" as leading_space %}
+                                    {% if leading_space > 0 %}
+                                        <a onclick="accuracy_detail({{ profile_id }}, 'leading_space', {{ forloop.counter0 }})" role="button">
+                                            {{ leading_space }}
+                                        </a>
+                                    {% else %}
+                                        {{ leading_space }}
+                                    {% endif %}
+                                {% endwith %}
+                                <a class="txt-primary" onclick="displayNonPrintable('{{ profile_id }}', '{{ forloop.counter0 }}')"><i class="fa fa-bar-chart-o"></i></a>
+                            </td>
+                            <td>
+                                {% with data.character_columns|arrayIndex:forloop.counter0|get_item:"trailing_space" as trailing_space %}
+                                    {% if trailing_space > 0 %}
+                                        <a onclick="accuracy_detail({{ profile_id }}, 'trailing_space', {{ forloop.counter0 }})" role="button">
+                                            {{ trailing_space }}
+                                        </a>
+                                    {% else %}
+                                        {{ trailing_space }}
+                                    {% endif %}
+                                {% endwith %}
+                            </td>
+                            <td>
+                                {% with data.character_columns|arrayIndex:forloop.counter0|get_item:"non_printable_character" as non_printable_character %}
+                                    {% if non_printable_character > 0 %}
+                                        <a onclick="accuracy_detail({{ profile_id }}, 'non_printable_character', {{ forloop.counter0 }})" role="button">
+                                            {{ non_printable_character }}
+                                        </a>
+                                    {% else %}
+                                        {{ non_printable_character }}
+                                    {% endif %}
+                                {% endwith %}
+                            </td>
+                            <td>
+                                {% with data.field_column|arrayIndex:forloop.counter0|get_item:"outlier_detection" as outlier_detection %}
+                                    {% if outlier_detection > 0 %}
+                                        <a onclick="accuracy_detail({{ profile_id }}, 'outlier_detection', {{ forloop.counter0 }})" role="button">
+                                            {{ outlier_detection }}
+                                        </a>
+                                    {% else %}
+                                        {{ outlier_detection }}
+                                    {% endif %}
+                                {% endwith %}
+                            </td>
+                            <td>
+                                {{ data.character_columns|arrayIndex:forloop.counter0|get_item:"punctuation_count"|sum_of_dict }}
+                                <a class="txt-primary" onclick="displayPunctuation('{{ profile_id }}', '{{ forloop.counter0 }}')"><i class="fa fa-search"></i></a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+  </div>
+</div>
+<div class="modal fade" id="chartModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="chartModalTitle">Non-Printable Statistics</h5>
+                <button class="btn-close" type="button" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="col-xl-12 col-md-12 box-col-12">
+                    <div class="card">
+                      <div class="card-body chart-block chart-vertical-center">
+                        <canvas id="graphCanvas"></canvas>
+                      </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="tableModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="tableModal">Punctuation Statistics</h5>
+                <button class="btn-close" type="button" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="col-xl-12 col-md-12 box-col-12">
+                  <div class="table-responsive">
+                    <table class="display" id="punctuation-table">
+                      <thead>
+                        <tr>
+                          <th>Character</th>
+                          <th>Count</th>
+                          <th>Percentage of Total Records</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="patternModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="patternModalTitle">Pattern Statistics</h5>
+                <button class="btn-close" type="button" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="col-sm-12 col-xl-12 col-md-12">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-xl-3 col-md-4">
+                                <div class="list-group" id="list-tab" role="tablist">
+
+
+                                </div>
+                            </div>
+                            <div class="col-xl-9 col-md-8">
+                                <div class="tab-content" id="nav-tabContent">
+                                    <div class="tab-pane fade show active" id="list-home" role="tabpanel"
+                                        aria-labelledby="list-home-list">
+                                        <div class="col-xl-6 col-md-8 col-sm-12">
+                                            <canvas id="pattern-graph"></canvas>
+                                        </div>
+
+                                        <br/>
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="table-responsive" style="height: 500px;">
+                                            <table class="table" id="pattern-table" >
+                                              <thead>
+                                                <tr>
+                                                  <th>Records</th>
+                                                </tr>
+                                              </thead>
+                                              <tbody>
+                                              </tbody>
+                                            </table>
+                                          </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="accuracy_value_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="accuracy_value_header">Records Table</h5>
+
+                <button class="btn-close" type="button" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                        <div class="col-xl-12 col-md-12 box-col-12">
+                          <div class="table-responsive">
+                            <table class="display " id="accuracy-value-table">
+                              <thead>
+                                <tr>
+                                  <th>Records</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+
+                              </tbody>
+                            </table>
+                          </div>
+
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" type="button" onclick="exportRecords()">Export</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="geo-value-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" >Records Table</h5>
+
+                <button class="btn-close" type="button" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="col-xl-12 col-md-12 box-col-12">
+                  <div class="table-responsive">
+                    <table class="display " id="geo-value-table">
+                      <thead>
+                        <tr>
+                          <th>Records</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

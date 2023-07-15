@@ -1,0 +1,83 @@
+{% load static %} {% load sass_tags %}
+{% load common %}
+<div class="tab-pane fade" id="uniqueness" role="tabpanel" aria-labelledby="uniqueness">
+  <div class="row">
+    <div class="col-sm-12">
+        <div class="card">
+          <div class="card-header">
+            <h5>Uniqueness</h5>
+          </div>
+              <div class="table-responsive tableFixHead">
+                <table class="table table-bordered">
+                  <thead>
+                    <tr>
+                      <th>Column Name</th>
+                      <th>Total Rows</th>
+                      <th>Distinct</th>
+                      <th>Histogram</th>
+                      <th>View Data</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+
+                    {% for column in columns %}
+                        <tr>
+                            {% if column in data.geomap_columns %}
+                                <td > <a class="txt-primary" onclick="getGeoData('{{ profile_id }}', '{{ forloop.counter0 }}')" role="button">{{ column }}</a></td>
+                            {% else %}
+                                <td>{{ column }}</td>
+                            {% endif %}
+
+                            <td>{{ data.field_column|arrayIndex:forloop.counter0|get_item:"filled_fields"}}</td>
+                            <td>{{ data.field_column|arrayIndex:forloop.counter0|get_item:"distinct_fields"}}</td>
+                            <td>
+                                <div id="histogram-bar_{{ forloop.counter0 }}"></div>
+                                <input type="hidden" id="histogram-key_{{ forloop.counter0 }}" value="{{ histogram_data_keys|arrayIndex:forloop.counter0 }}">
+                                <input type="hidden" id="histogram-value_{{ forloop.counter0 }}" value="{{ histogram_data_values|arrayIndex:forloop.counter0 }}">
+                            </td>
+                            <td> <a class="txt-primary" onclick="displayDistinct('{{ profile_id }}', '{{ forloop.counter0 }}')"><i class="fa fa-search"></i></a></td>
+                        </tr>
+                    {% endfor %}
+
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+  </div>
+</div>
+<div class="modal fade" id="distinctModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="tableModal">Distinction Statistics</h5>
+                <button class="btn-close" type="button" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="col-xl-12 col-md-12 box-col-12">
+                  <div class="table-responsive">
+                    <table class="display" id="distinct-table">
+                      <thead>
+                        <tr>
+                          <th>Value</th>
+                          <th>Frequency</th>
+                          <th>Percent</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>

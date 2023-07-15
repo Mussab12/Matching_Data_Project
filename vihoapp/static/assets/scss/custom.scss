@@ -1,0 +1,35 @@
+@import "theme/variables";
+//Profiller Style Sheet
+
+#patternModal {
+
+    @media (min-width: 576px) {
+        .modal-dialog {
+            max-width: 70vw !important;
+        }
+    }
+
+}
+
+//Fixed Table
+.tableFixHead { overflow-y: auto; height: 500px; }
+.tableFixHead thead  {
+    position: sticky;
+    top: 1px;
+    z-index: 8;
+
+}
+.tableFixHead thead th {
+    background-color: white;
+    outline:1px solid $light-gray;
+}
+
+//dark mode
+body.dark-only .page-wrapper.horizontal-wrapper .page-body-wrapper .page-body .card .tableFixHead thead th,
+body.dark-only .compact-wrapper .page-body-wrapper .page-body .card .tableFixHead thead th
+{
+    outline:1px solid $dark-card-border;
+}
+#accuracy-value-table tbody td {
+    white-space: pre;
+}

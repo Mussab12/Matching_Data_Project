@@ -1,0 +1,26 @@
+ {% load static %} {% load sass_tags %}
+ <!-- login page start-->
+ <section>         
+  <div class="container-fluid p-0">
+    <div class="row">
+      <div class="col-12">
+        <div class="login-card">
+          <form class="theme-form login-form" method="post">
+            <h4>Login</h4>
+            <h6>Welcome back! Log in to your account.</h6>
+            {% csrf_token %}
+            {{ form }}
+            {% if request.GET.next%}
+            <input type="hidden" name="next" value="{{request.GET.next}}">
+            {% endif %}
+            <div class="form-group">
+              <button class="btn btn-primary btn-block" type="submit">Sign in</button>
+            </div>
+           
+            <p>Don't have account?<a class="ms-2" href="/register">Create Account</a></p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

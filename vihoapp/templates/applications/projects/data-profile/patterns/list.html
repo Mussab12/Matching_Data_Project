@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% load static %} {% load sass_tags %}
+
+{% block css %}
+<!-- Plugins css start-->
+<link rel="stylesheet" type="text/css" href="{% sass_src 'assets/scss/datatables.scss' %}">
+<link rel="stylesheet" type="text/css" href="{% sass_src 'assets/scss/datatable-extension.scss' %}">
+<!-- Plugins css Ends-->
+{% endblock %}
+
+{% block content %}
+
+<div class="page-body">
+      {% include "layout/breadcrumb.html" %}
+      <input type="hidden" value="{{ csrf_token }}" id="csrf_token"/>
+      <input type="hidden" value="-1" id="pattern-id"/>
+      <div class="container-fluid">
+          <div class="row">
+              <div class="col-sm-12">
+                <div class="card">
+                  <div class="card-header">
+                   <div class="file-content">
+                      <div class="media-body text-end d-flex justify-content-end">
+                          <button class="btn btn-warning me-2" type="button" onclick="saveSelectedPattern()"><span><i class="fa fa-check"></i></span> Save</button>
+                          <a class="btn btn-danger me-2" href="{% url 'data_profile:profile-list' %}"><span><i class="fa fa-close"></i></span> Back</a>
+                          <button class="btn btn-primary" type="button" data-bs-toggle="modal"
+                                  data-bs-target="#patternModal"><i data-feather="plus-square"></i>New Pattern </button>
+
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card-body">
+                   <div class="table-responsive">
+                        <table class="table display" id="pattern-table">
+                          <thead>
+                            <tr>
+                              <th width="8%">Selected</th>
+                              <th width="15%">Name</th>
+                              <th width="15%">Type</th>
+                              <th>Pattern</th>
+                              <th width="15%">Options</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                          </tbody>
+                        </table>
+                      </div>
+                  </div>
+                </div>
+              </div>
+          </div>
+          <div class="modal fade" id="patternModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel2">New Pattern</h5>
+                        <button class="btn-close" type="button" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="pattern-form">
+                            <div class="mb-3">
+                                <label class="col-form-label" for="recipient-name">Name:</label>
+                                <input class="form-control" type="text"  id="pattern-name" required="">
+                            </div>
+                            <div class="mb-3">
+                                <label class="col-form-label" for="recipient-name">Type:</label>
+                                <input class="form-control" type="text"  id="pattern-type" required="">
+                            </div>
+                            <div class="mb-3">
+                                <label class="col-form-label" for="message-text">Pattern:</label>
+                                <textarea class="form-control" id="pattern-pattern" required="" ></textarea>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button"
+                            data-bs-dismiss="modal">Close</button>
+                        <button class="btn btn-primary" type="button" onclick="addNewPattern()">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>
+</div>
+
+{% endblock %}
+
+{% block scriptcontent %}
+<!-- Plugins JS start-->
+<script src="{% static 'assets/js/datatable/datatables/jquery.dataTables.min.js'%}"></script>
+<script src="{% static 'assets/js/datatable/datatable-extension/dataTables.select.min.js'%}"></script>
+<script src="{% static 'assets/js/sweet-alert/sweetalert.min.js' %}"></script>
+<script src="{% static 'assets/js/projects/patterns.js'%}"></script>
+<script src="{% static 'assets/js/tooltip-init.js'%}"></script>
+<!-- Plugins JS Ends-->
+{% endblock %}

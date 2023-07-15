@@ -1,0 +1,148 @@
+{% extends 'base.html' %} {% load static %} {% load sass_tags %} {% block css %}
+<!-- Plugins css start-->
+<link rel="stylesheet" type="text/css" href="{% sass_src 'assets/scss/animate.scss' %}" />
+<link rel="stylesheet" type="text/css" href="{% sass_src 'assets/scss/datatables.scss' %}" />
+<!-- Plugins css Ends-->
+{% endblock %} {% block content %}
+
+<div class="page-body">
+  {% include "layout/breadcrumb.html" %}
+  <div class="container-fluid">
+    <div class="row project-cards">
+      <div class="col-sm-4">
+        <div class="card">
+          <div class="card-body">
+            <div class="tab-content" id="top-category">
+              <div class="tab-pane fade show active" id="top-home" role="tabpanel" aria-labelledby="top-home-tab">
+                <div class="row">
+                  <div>
+                    <h3>Category</h3>
+                  </div>
+                  <div class="p-r-0">
+                    <button id="btn_category_add" class="btn btn-primary m-b-10 float-end">Add</button>
+                  </div>
+                  <table id="table_category_list" class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th class="col-sm-7">Name</th>
+                        <th class="col-sm-5">Action</th>
+                    </tr>
+                    </thead>
+                    <tfoot>
+                    <tr>
+
+                    </tr>
+                    </tfoot>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-8">
+        <div class="card">
+          <div class="card-body">
+            <div class="tab-content" id="top-category">
+              <div class="tab-pane fade show active" id="top-home" role="tabpanel" aria-labelledby="top-home-tab">
+                <div class="row">
+                  <div>
+                    <h3>Mapping List</h3>
+                  </div>
+                  <div class="p-r-0">
+                    <button id="btn_mappinglist_add" class="btn btn-primary m-b-10 float-end">Add</button>
+                  </div>
+                  <table id="table_mapping_list" class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>Category Name</th>
+                        <th>Mapping List Name</th>
+                        <th>Display Name</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tfoot>
+                    <tr>
+
+                    </tr>
+                    </tfoot>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modal_category" role="dialog" aria-hidden="true">
+  <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content" style="padding-top: 0 !important;">
+          <div class="modal-header">
+              <h4 class="modal-title" id="modal_title_category"></h4>
+          </div>
+          <div class="modal-body">
+            <div class="form-group m-b-0" id="task_desc">
+                <input type="text" class="form-control" id="category_name" name="name" placeholder="Enter the Category name" required="true">
+            </div>
+            <p id="category_error" style="color: red; font-size: 11px;" class="hide m-b-0"></p>
+            <input id="category_id" class="hide" style="display: none"/>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-success btn-block"
+                id="btn_category_save"><span class="glyphicon glyphicon-ok"></span>
+                Save
+            </button>
+          </div>
+      </div>
+  </div>
+</div>
+
+<div class="modal" id="modal_mappinglist" role="dialog" aria-hidden="true">
+  <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content" style="padding-top: 0 !important;">
+          <div class="modal-header">
+              <h4 class="modal-title" id="modal_title_mappinglist"></h4>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="category_list">Category List</label>
+              <select id="category_list" style="width: 100%">
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="mappinglist_name">Mapping List Name</label>
+                <input type="text" class="form-control" id="mappinglist_name" name="name" placeholder="Enter the Mapping List Name" required="true">
+                <p id="mappinglist_name_error" style="color: red; font-size: 11px;" class="hide m-b-0"></p>
+            </div>
+            <div class="form-group m-b-0">
+              <label for="display_name">Display Name</label>
+              <input type="text" class="form-control" id="display_name" name="name" placeholder="Enter the Display Name" required="true">
+              <p id="display_name_error" style="color: red; font-size: 11px;" class="hide m-b-0"></p>
+          </div>
+            <p id="mappinglist_error" style="color: red; font-size: 11px;" class="hide m-b-0"></p>
+            <input id="mappinglist_id" class="hide" style="display: none"/>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-success btn-block"
+                id="btn_mappinglist_save"><span class="glyphicon glyphicon-ok"></span>
+                Save
+            </button>
+          </div>
+      </div>
+  </div>
+</div>
+{% endblock %} {% block scriptcontent %}
+<!-- Plugins JS start-->
+<script src="{% static 'assets/js/prism/prism.min.js'%}"></script>
+<script src="{% static 'assets/js/clipboard/clipboard.min.js'%}"></script>
+<script src="{% static 'assets/js/custom-card/custom-card.js'%}"></script>
+<script src="{% static 'assets/js/height-equal.js'%}"></script>
+<script src="{% static 'assets/js/datatable/datatables/jquery.dataTables.min.js'%}"></script>
+<script src="{% static 'assets/js/projects/mapping_list.js'%}"></script>
+<!-- Plugins JS Ends-->
+{% endblock %}

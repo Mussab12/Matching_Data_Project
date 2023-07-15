@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% load static %} {% load sass_tags %}
+
+{% block css %}
+<!-- Plugins css start-->
+<link rel="stylesheet" type="text/css" href="{% static 'assets/css/bootstrap-tagsinput.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/css/custom-tagsinput.css' %}">
+<!-- Plugins css Ends-->
+{% endblock %}
+
+{% block content %}
+<form method = "POST" action = "{% url 'data_profile:profile-create' %}" role = "form" id="profile-create">
+  {% csrf_token %}
+<div class="page-body">
+  {% include "layout/breadcrumb.html" %}
+  <div class="container-fluid">
+    {% comment %} {{msg}} {% endcomment %}
+
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="form theme-form">
+              <div class="row">
+                <div class="col">
+                  <div class="mb-3">
+                    <label>Profile name</label>
+                    <input class="form-control" type="text" name="name" placeholder="Profile name *">
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <div class="mb-3">
+                    <label>Add Imported DataSource</label>
+                    <select class="form-select" name="data_source">
+                      <option>Low</option>
+                      <option>Medium</option>
+                      <option>High</option>
+                      <option>Urgent</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+
+              </div>
+              <div class="row">
+                <div class="col">
+                  <div class="mb-3">
+                    <label>Output name</label>
+                    <input class="form-control" type="text" name="data_source_output" placeholder="Output Name *">
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <div class="mb-3">
+                    <label>Email Addresses</label>
+                    <input class="form-control" type="text" value="" data-role="tagsinput" name="emails"/>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <div class="mb-3">
+                    <label>Enter some Details</label>
+                    <textarea class="form-control" id="exampleFormControlTextarea4" name="details" rows="3"></textarea>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                    <div class="text-end"><input type="button" name="Add" class="btn btn-success me-3" value="Submit" onclick="submitForm()"> </input>
+                    <a class="btn btn-danger" href="{% url 'data_profile:profile-list' %}">Cancel</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</form>
+{% endblock %}
+
+{% block scriptcontent %}
+<!-- Plugins JS start-->
+<script src="{% static 'assets/js/bootstrap/bootstrap-tagsinput.min.js' %}"></script>
+<!-- Plugins JS Ends-->
+
+<script>
+    function submitForm() {
+        $("#profile-create").submit();
+    }
+</script>
+{% endblock %}
