@@ -11,13 +11,19 @@ class exceldata(models.Model):
 
 
 class CustomerMaster(models.Model):
-    data1 = models.JSONField()
+    # Use a JSONField to store dynamic data
 
-    relationship = models.ForeignKey(
-        'self', null=True, blank=True, on_delete=models.SET_NULL)  # to make data1->data1 relation
+    data1 = models.JSONField()
 
     class Meta:
         verbose_name = "Customer Master"
+
+
+class Relationship(models.Model):
+    from_data = models.ForeignKey(
+        CustomerMaster, related_name='from_relationships', on_delete=models.CASCADE)
+    to_data = models.ManyToManyField(
+        CustomerMaster, related_name='to_relationships')
 
 
 class NewProsectRecords(models.Model):

@@ -6,6 +6,7 @@ import simplejson as json
 import numpy as np
 from django.core.cache import cache
 import traceback
+from django.core.serializers import serialize
 
 from collections import defaultdict
 
@@ -28,7 +29,7 @@ from vihoapp.global_func import checkifDataType, checkDateType
 from .tasks import test_data, profile_columns, data_profile_task
 from viho.celery import app
 import pandas as pd
-from apis.models import exceldata, CustomerMaster, NewProsectRecords, MatchingConfig
+from apis.models import exceldata, CustomerMaster, NewProsectRecords, MatchingConfig, Relationship
 from rest_framework.views import APIView
 from rest_framework import status
 
@@ -1048,6 +1049,7 @@ class ExceldataoriginalvaluesView(APIView):
 
 
 class ExcelToJson(APIView):
+
     def post(self, request, format=None):
         try:
             xlsx_file = request.FILES['xlsxFile']  # Access the uploaded file
@@ -1058,11 +1060,10 @@ class ExcelToJson(APIView):
             extracteddata = dataExtraction(dataframe1)
 
             json_data1 = convertExceltoJson(extracteddata)
-            # json_data2 = json.loads(dataframe2.to_json(orient='records'))
-            # customer_master = CustomerMaster(data1=json_data1)
-            # customer_master.save()
-            newprospect_records = CustomerMaster(data1=json_data1)
-            newprospect_records.save()
+
+            data_sources = CustomerMaster(
+                data1=json_data1)
+            data_sources.save()
 
             # Separate status code and JSON data
             return Response({'message': 'Successfully Added', 'data': json_data1})
@@ -1087,8 +1088,20 @@ class ExcelToJson(APIView):
         customer_master.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+# Get Json Data by Id
 
-get_checked_values = []
+
+class GetJsonDataView(APIView):
+    def get_object(self, pk):
+        try:
+            return CustomerMaster.objects.get(pk=pk)
+        except CustomerMaster.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        datasource = self.get_object(pk)
+        serializer = CustomerMasterSerializer(datasource)
+        return Response(serializer.data)
 
 # @api to define matching configuration
 
@@ -1096,18 +1109,51 @@ get_checked_values = []
 class MatchingConfigView(APIView):
     def post(self, request, format=None):
         checked_values = request.data.get('checked_values', [])
+        print(checked_values)
+        if 'customer_master' in checked_values and 'customermaster_record' in checked_values and 'newprospect_record' in checked_values:
+            return Response("Logic Worked!!!")
 
-        if 'customer_master' in checked_values:
+        if checked_values:
+            queryset = CustomerMaster.objects.all()
+            # Create a dictionary to store the relationship data
+            relationships = {}
+            for customer in queryset:
+                # Create a list with only the customer instance itself
+                # related_customers = [serialize('json', [customer])]
+                # Create a list with only the customer's ID
+                related_customers = [customer.id]
+
+                # Store the related CustomerMaster instances in the dictionary
+                relationships[customer.id] = related_customers
+            return Response(relationships)
+
+        # if user pressed between
+        if 'customermaster_record' in checked_values:
 
             queryset = CustomerMaster.objects.all()
-            for model in queryset:
-                related_model = CustomerMaster.objects.filter(
-                    data1=model.data1).first()
-                model.relationship = related_model
-                model.save()
-            serializer = CustomerMasterSerializer(queryset, many=True)
+            # Create a dictionary to store the relationship data
+            relationships = {}
+            for index, customer in enumerate(queryset):
+                # Create a list to store the related CustomerMaster instances
+                related_customers = []
+                for i in range(index + 1, len(queryset)):
+                    related_instance = queryset[i]
+                    related_customers.append(related_instance.id)
 
-            return Response({'relationship_data': serializer.data})
+        # Store the related CustomerMaster IDs in the dictionary
+                relationships[customer.id] = related_customers
+
+        # Store the related CustomerMaster instances in the dictionary
+
+            # matchdata = MatchingConfig(matchdata=relationships)
+            # matchdata.save()
+
+            # Filter and count duplicates based on specific fields (e.g., email)
+
+            return Response(relationships)
+
+        else:
+            return Response("None Pressed")
 
     def get(self, request, format=None):
         # Retrieve the matching configuration or perform any additional processing
