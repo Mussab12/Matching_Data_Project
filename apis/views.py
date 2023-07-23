@@ -1144,6 +1144,7 @@ class MatchingConfigView(APIView):
         #     return Response({"All_Relationships": relationships})
         if checked_values:
             queryset = CustomerMaster.objects.all()
+            print(queryset)
 
             # Create a dictionary to store the relationship data
             # Initialize the relationships with the first sequence
