@@ -6,6 +6,7 @@ import simplejson as json
 import numpy as np
 from django.core.cache import cache
 import traceback
+from django.core.serializers import serialize
 
 from collections import defaultdict
 
@@ -28,7 +29,7 @@ from vihoapp.global_func import checkifDataType, checkDateType
 from .tasks import test_data, profile_columns, data_profile_task
 from viho.celery import app
 import pandas as pd
-from apis.models import exceldata, CustomerMaster, NewProsectRecords, MatchingConfig
+from apis.models import exceldata, CustomerMaster, NewProsectRecords, MatchingConfig, Relationship
 from rest_framework.views import APIView
 from rest_framework import status
 
@@ -1048,21 +1049,20 @@ class ExceldataoriginalvaluesView(APIView):
 
 
 class ExcelToJson(APIView):
+
     def post(self, request, format=None):
         try:
             xlsx_file = request.FILES['xlsxFile']  # Access the uploaded file
 
             dataframe1 = pd.read_excel(xlsx_file)
-            dataframe2 = pd.read_excel(xlsx_file)
 
             extracteddata = dataExtraction(dataframe1)
 
             json_data1 = convertExceltoJson(extracteddata)
-            # json_data2 = json.loads(dataframe2.to_json(orient='records'))
-            # customer_master = CustomerMaster(data1=json_data1)
-            # customer_master.save()
-            newprospect_records = CustomerMaster(data1=json_data1)
-            newprospect_records.save()
+
+            data_sources = CustomerMaster(
+                data1=json_data1)
+            data_sources.save()
 
             # Separate status code and JSON data
             return Response({'message': 'Successfully Added', 'data': json_data1})
@@ -1087,8 +1087,20 @@ class ExcelToJson(APIView):
         customer_master.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+# Get Json Data by Id
 
-get_checked_values = []
+
+class GetJsonDataView(APIView):
+    def get_object(self, pk):
+        try:
+            return CustomerMaster.objects.get(pk=pk)
+        except CustomerMaster.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        datasource = self.get_object(pk)
+        serializer = CustomerMasterSerializer(datasource)
+        return Response(serializer.data)
 
 # @api to define matching configuration
 
@@ -1096,18 +1108,71 @@ get_checked_values = []
 class MatchingConfigView(APIView):
     def post(self, request, format=None):
         checked_values = request.data.get('checked_values', [])
+        values_after_row = [value.split('-')[1] for value in checked_values]
 
-        if 'customer_master' in checked_values:
+        print(values_after_row)
 
+        # print(checked_values[0])
+        if 'customer_master' in checked_values and 'customermaster_record' in checked_values and 'newprospect_record' in checked_values:
+            return Response("Logic Worked!!!")
+        # if checked_values:
+        #     queryset = CustomerMaster.objects.all()
+
+        #     # Create a dictionary to store the relationship data
+        #     relationships = {}
+        #     related_customers_set = set()
+
+        #     for value in values_after_row:
+        #         value_id = int(value)
+
+        #         # Initialize the related_customers_set only for the first value_id (row-2-col-1)
+        #         if value_id == 1:
+        #             related_customers_set = set([1])
+        #             # print("related set", related_customers_set)
+
+        #         for _ in range(0, value_id):
+        #             col_value_id = value_id
+        #             print(col_value_id)
+        #             try:
+        #                 related_customer = queryset.get(id=col_value_id)
+        #                 related_customers_set.add(related_customer.id)
+        #             except CustomerMaster.DoesNotExist:
+        #                 pass
+
+        #     relationships[1] = list(related_customers_set)
+
+        #     return Response({"All_Relationships": relationships})
+        if checked_values:
             queryset = CustomerMaster.objects.all()
-            for model in queryset:
-                related_model = CustomerMaster.objects.filter(
-                    data1=model.data1).first()
-                model.relationship = related_model
-                model.save()
-            serializer = CustomerMasterSerializer(queryset, many=True)
 
-            return Response({'relationship_data': serializer.data})
+            # Create a dictionary to store the relationship data
+            # Initialize the relationships with the first sequence
+            relationships = {1: set()}
+
+            for col, value in enumerate(values_after_row):
+                value_id = int(value)
+
+                # Add the new value_id to the related_customers_set for this sequence
+                relationships[1].add(value_id)
+
+                # Retrieve the related customers based on the primary keys and add them to the set
+                for related_id in list(relationships[1]):
+                    try:
+                        related_customer = queryset.get(id=related_id)
+                        relationships[1].add(related_customer.id)
+                    except CustomerMaster.DoesNotExist:
+                        pass
+
+                # Store the updated relationships in the dictionary for the current sequence
+                relationships[col + 2] = set(relationships[1])
+
+            # Convert the sets to lists and return the relationships dictionary
+            for key in relationships:
+                relationships[key] = sorted(list(relationships[key]))
+
+            return Response({"All_Relationships": relationships})
+        else:
+            return Response("None Pressed")
 
     def get(self, request, format=None):
         # Retrieve the matching configuration or perform any additional processing
@@ -1132,8 +1197,9 @@ class ModelNameAPIView(APIView):
 # Function to read excel file
 
 def readExcelfile():
-    dataframe = pd.read_excel("apis\Example Data 1.xlsx")
-    return dataframe
+    dataframe1 = pd.read_excel("apis\Example Data 1.xlsx")
+    dataframe2 = pd.read_excel("apis\Example Data 2.xlsx")
+    return dataframe1, dataframe2
 
 # Function to Convert Excel to Json
 
