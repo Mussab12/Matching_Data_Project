@@ -1055,7 +1055,6 @@ class ExcelToJson(APIView):
             xlsx_file = request.FILES['xlsxFile']  # Access the uploaded file
 
             dataframe1 = pd.read_excel(xlsx_file)
-            dataframe2 = pd.read_excel(xlsx_file)
 
             extracteddata = dataExtraction(dataframe1)
 
@@ -1109,9 +1108,10 @@ class GetJsonDataView(APIView):
 class MatchingConfigView(APIView):
     def post(self, request, format=None):
         checked_values = request.data.get('checked_values', [])
-        print(checked_values)
-        if 'customer_master' in checked_values and 'customermaster_record' in checked_values and 'newprospect_record' in checked_values:
-            return Response("Logic Worked!!!")
+
+        values_after_row = [value.split('-')[1] for value in checked_values]
+
+        print(values_after_row)
 
         if checked_values:
             queryset = CustomerMaster.objects.all()
@@ -1128,8 +1128,37 @@ class MatchingConfigView(APIView):
             return Response(relationships)
 
         # if user pressed between
-        if 'customermaster_record' in checked_values:
 
+        # print(checked_values[0])
+
+        # if checked_values:
+        #     queryset = CustomerMaster.objects.all()
+
+        #     # Create a dictionary to store the relationship data
+        #     relationships = {}
+        #     related_customers_set = set()
+
+        #     for value in values_after_row:
+        #         value_id = int(value)
+
+        #         # Initialize the related_customers_set only for the first value_id (row-2-col-1)
+        #         if value_id == 1:
+        #             related_customers_set = set([1])
+        #             # print("related set", related_customers_set)
+
+        #         for _ in range(0, value_id):
+        #             col_value_id = value_id
+        #             print(col_value_id)
+        #             try:
+        #                 related_customer = queryset.get(id=col_value_id)
+        #                 related_customers_set.add(related_customer.id)
+        #             except CustomerMaster.DoesNotExist:
+        #                 pass
+
+        #     relationships[1] = list(related_customers_set)
+
+        #     return Response({"All_Relationships": relationships})
+        if checked_values:
             queryset = CustomerMaster.objects.all()
             # Create a dictionary to store the relationship data
             relationships = {}
@@ -1151,6 +1180,9 @@ class MatchingConfigView(APIView):
             # Filter and count duplicates based on specific fields (e.g., email)
 
             return Response(relationships)
+
+            # Create a dictionary to store the relationship data
+            # Initialize the relationships with the first sequence
 
         else:
             return Response("None Pressed")
@@ -1178,8 +1210,9 @@ class ModelNameAPIView(APIView):
 # Function to read excel file
 
 def readExcelfile():
-    dataframe = pd.read_excel("apis\Example Data 1.xlsx")
-    return dataframe
+    dataframe1 = pd.read_excel("apis\Example Data 1.xlsx")
+    dataframe2 = pd.read_excel("apis\Example Data 2.xlsx")
+    return dataframe1, dataframe2
 
 # Function to Convert Excel to Json
 

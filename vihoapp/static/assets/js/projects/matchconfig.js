@@ -44,6 +44,18 @@ const generateTable = (data) => {
         colCount,
         pattern
       );
+      const updateCheckedIds = () => {
+        const rowCount = data.length; // Replace this with the actual row count
+        const colCount = data.reduce((max, col) => Math.max(max, col.id), 0); // Assuming 'id' is the number of columns
+        const checkboxIdsToCheck = generateCheckboxIds(
+          rowCount,
+          colCount,
+          pattern
+        ); // You can change the pattern if needed
+        checkedIds = getCheckedCheckboxIds(checkboxIdsToCheck, pattern); // You can change the pattern if needed
+        console.log(checkedIds);
+      };
+
       checkAllCheckboxes(checkboxIdsToCheck, pattern);
       let checkedIds = getCheckedCheckboxIds(checkboxIdsToCheck, pattern);
       console.log(checkedIds);
@@ -54,19 +66,11 @@ const generateTable = (data) => {
           updateCheckedIds(pattern); // Update the checkedIds array whenever a checkbox is manually checked or unchecked
           saveMatchingConfig(checkedIds);
         });
-        const updateCheckedIds = (pattern) => {
-          const rowCount = data.length; // Replace this with the actual row count
-          const colCount = data.reduce((max, col) => Math.max(max, col.id), 0); // Assuming 'id' is the number of columns
-          const checkboxIdsToCheck = generateCheckboxIds(
-            rowCount,
-            colCount,
-            pattern
-          ); // You can change the pattern if needed
-          checkedIds = getCheckedCheckboxIds(checkboxIdsToCheck, pattern); // You can change the pattern if needed
-          console.log(checkedIds);
-        };
+
+        checkedIds = getCheckedCheckboxIds(checkboxIdsToCheck, pattern); // You can change the pattern if needed
+        console.log(checkedIds);
+        saveMatchingConfig(checkedIds);
       });
-      saveMatchingConfig(checkedIds);
     };
   });
 };
@@ -214,15 +218,6 @@ const matchButtonValidate = (buttonId, checkboxes) => {
   return checkedValues;
 };
 
-const updateCheckboxArray = (checkboxes) => {
-  const checkedValues = checkboxes
-    .filter((checkbox) => checkbox.checked)
-    .map((checkbox) => checkbox.id);
-
-  console.log(checkedValues);
-  saveMatchingConfig(checkedValues);
-};
-
 const saveMatchingConfig = (checkedValues) => {
   // Send the checkedValues to the API endpoint
   const csrftoken = getCookie("csrftoken");
@@ -240,24 +235,24 @@ const saveMatchingConfig = (checkedValues) => {
       // Handle the API response here
 
       // Perform GET request to retrieve the response
-      fetch("/apis/v1/matchconfig/", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": csrftoken, // Include the CSRF token in the request headers
-        },
-      })
-        .then((response) => response.json())
-        .then((getData) => {
-          console.log("Matching configuration retrieved:", getData);
-          // Handle the GET API response here
-        })
-        .catch((error) => {
-          console.error("Error retrieving matching configuration:", error);
-        });
-    })
-    .catch((error) => {
-      console.error("Error saving matching configuration:", error);
+      //   fetch("/apis/v1/matchconfig/", {
+      //     method: "GET",
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //       "X-CSRFToken": csrftoken, // Include the CSRF token in the request headers
+      //     },
+      //   })
+      //     .then((response) => response.json())
+      //     .then((getData) => {
+      //       console.log("Matching configuration retrieved:", getData);
+      //       // Handle the GET API response here
+      //     })
+      //     .catch((error) => {
+      //       console.error("Error retrieving matching configuration:", error);
+      //     });
+      // })
+      // .catch((error) => {
+      //   console.error("Error saving matching configuration:", error);
     });
 };
 

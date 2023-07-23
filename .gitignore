@@ -49,3 +49,6 @@ ipython_config.py
 
 # Secrets
 secrets.json
+
+# virtual enviroment
+venvenv
