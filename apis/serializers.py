@@ -21,9 +21,17 @@ class RelatedCustomerSerializer(serializers.ModelSerializer):
                     keys.extend(list(item.keys()))
         return keys
 
+    def get_keys_data2(self, obj):
+        keys = []
+        if isinstance(obj.data2, list):
+            for item in obj.data2:
+                if isinstance(item, dict):
+                    keys.extend(list(item.keys()))
+        return keys
+
     class Meta:
         model = CustomerMaster
-        fields = ['keys']
+        fields = ['keys_data1', 'keys_data2']
 
 
 class CustomerMasterSerializer(serializers.ModelSerializer):
