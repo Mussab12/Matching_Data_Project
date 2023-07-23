@@ -15,21 +15,33 @@ class RelatedCustomerSerializer(serializers.ModelSerializer):
 
     def get_keys(self, obj):
         keys = []
-        if isinstance(obj.data1, list):
-            for item in obj.data1:
+        if isinstance(obj.data, list):
+            for item in obj.data:
+                if isinstance(item, dict):
+                    keys.extend(list(item.keys()))
+        return keys
+
+    def get_keys_data2(self, obj):
+        keys = []
+        if isinstance(obj.data2, list):
+            for item in obj.data2:
                 if isinstance(item, dict):
                     keys.extend(list(item.keys()))
         return keys
 
     class Meta:
         model = CustomerMaster
-        fields = ['keys']
+        fields = ['keys_data1', 'keys_data2']
 
 
 class CustomerMasterSerializer(serializers.ModelSerializer):
     # relationship = serializers.PrimaryKeyRelatedField(
     #     many=False, read_only=True)
     relationship = RelatedCustomerSerializer(many=False, read_only=True)
+
+    class Meta:
+        model = CustomerMaster
+        fields = '__all__'
 
     # def get_relationship(self, obj):
     #     if obj.relationship:
@@ -39,10 +51,6 @@ class CustomerMasterSerializer(serializers.ModelSerializer):
     #         }
     #         return related_data
     #     return None
-
-    class Meta:
-        model = CustomerMaster
-        fields = ['id', 'data1', 'relationship']
 
 
 class MatchingConfigSerializer(serializers.ModelSerializer):

@@ -1108,13 +1108,29 @@ class GetJsonDataView(APIView):
 class MatchingConfigView(APIView):
     def post(self, request, format=None):
         checked_values = request.data.get('checked_values', [])
+
         values_after_row = [value.split('-')[1] for value in checked_values]
 
         print(values_after_row)
 
+        if checked_values:
+            queryset = CustomerMaster.objects.all()
+            # Create a dictionary to store the relationship data
+            relationships = {}
+            for customer in queryset:
+                # Create a list with only the customer instance itself
+                # related_customers = [serialize('json', [customer])]
+                # Create a list with only the customer's ID
+                related_customers = [customer.id]
+
+                # Store the related CustomerMaster instances in the dictionary
+                relationships[customer.id] = related_customers
+            return Response(relationships)
+
+        # if user pressed between
+
         # print(checked_values[0])
-        if 'customer_master' in checked_values and 'customermaster_record' in checked_values and 'newprospect_record' in checked_values:
-            return Response("Logic Worked!!!")
+
         # if checked_values:
         #     queryset = CustomerMaster.objects.all()
 
@@ -1144,33 +1160,30 @@ class MatchingConfigView(APIView):
         #     return Response({"All_Relationships": relationships})
         if checked_values:
             queryset = CustomerMaster.objects.all()
+            # Create a dictionary to store the relationship data
+            relationships = {}
+            for index, customer in enumerate(queryset):
+                # Create a list to store the related CustomerMaster instances
+                related_customers = []
+                for i in range(index + 1, len(queryset)):
+                    related_instance = queryset[i]
+                    related_customers.append(related_instance.id)
+
+        # Store the related CustomerMaster IDs in the dictionary
+                relationships[customer.id] = related_customers
+
+        # Store the related CustomerMaster instances in the dictionary
+
+            # matchdata = MatchingConfig(matchdata=relationships)
+            # matchdata.save()
+
+            # Filter and count duplicates based on specific fields (e.g., email)
+
+            return Response(relationships)
 
             # Create a dictionary to store the relationship data
             # Initialize the relationships with the first sequence
-            relationships = {1: set()}
 
-            for col, value in enumerate(values_after_row):
-                value_id = int(value)
-
-                # Add the new value_id to the related_customers_set for this sequence
-                relationships[1].add(value_id)
-
-                # Retrieve the related customers based on the primary keys and add them to the set
-                for related_id in list(relationships[1]):
-                    try:
-                        related_customer = queryset.get(id=related_id)
-                        relationships[1].add(related_customer.id)
-                    except CustomerMaster.DoesNotExist:
-                        pass
-
-                # Store the updated relationships in the dictionary for the current sequence
-                relationships[col + 2] = set(relationships[1])
-
-            # Convert the sets to lists and return the relationships dictionary
-            for key in relationships:
-                relationships[key] = sorted(list(relationships[key]))
-
-            return Response({"All_Relationships": relationships})
         else:
             return Response("None Pressed")
 

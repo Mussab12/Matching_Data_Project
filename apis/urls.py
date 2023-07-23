@@ -135,6 +135,8 @@ urlpatterns = [
     path("v1/getmodelname/", ModelNameAPIView.as_view(), name='ModelName'),
     # to convert excel to json
     path("v1/exceltojson/", ExcelToJson.as_view(), name='ExcelToJson'),
+    # Getting Json Data by Id
+    path("v1/getjsonbyid/<int:pk>/", GetJsonDataView.as_view(), name="GetJsonById")
 
 
 
